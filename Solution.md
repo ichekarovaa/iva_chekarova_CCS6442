@@ -56,3 +56,73 @@ Why I used a new **feature** branch (`feature/user-str-method`) from `develop`, 
 - **Requirement 16.** `feature/step4` started from `develop`, which did not have `main_runner.py`, so the file was created there.
 
 - **Requirement 23.** Hotfix `hotfix/1.0.1` from `master` (the important production bug), merged into `master` (tag `v1.0.1`) and back into `develop`. 1.0.1 is a PATCH version.
+
+
+## Part 2
+
+ 
+
+I used Gitflow for all Part 2 changes:
+
+- new work went on `feature/` branches made from `develop`
+
+- the production version was prepared on a `release/` branch
+
+- the urgent production fix went on a `hotfix/` branch made from `master`
+
+ 
+
+Every branch was merged with a Pull Request and then deleted.
+
+ 
+
+### 1. Postgres service (`feature/postgres-service`)
+
+- I replaced the `db` service with a new service called `postgres` (image `postgres:16-alpine`, port 5432).
+
+- The `app` service now uses `postgres`.
+
+- The username, password and database name are in an `.env` file. This file is in `.gitignore`, so it is not pushed to GitHub. I only pushed `.env.example`.
+
+- I used a fixed image version, not `latest`, so it does not change by itself.
+
+ 
+### 2. Checkstatus service (`feature/checkstatus-service`)
+
+- `src/checkstatus.sh` checks every 2 seconds if the database is ready (with `pg_isready`). When it is ready, it prints a message and stops.
+
+- `src/Production-Dockerfile` uses `alpine`, installs `pg_isready` and runs the script every time the container starts.
+
+- I added the `checkstatus` service to `docker-compose.yml`.
+
+- Problem: the first time I got `exec format error`. The reason was that `#!/bin/sh` was not on the first line of the script, I accidently added a new line before it. I fixed it.
+
+ 
+### 3. Release 1.1.0 (`release/1.1.0`)
+
+- I used a release branch because the new features were ready and I only had to prepare them for production.
+
+- I changed the image to `citycase/assessment2:1.0` and changed the version to 1.1.0.
+
+- Version 1.1.0, because I added new features.
+
+- I merged it into `master`, added the tag `v1.1.0`, and merged it back into `develop`.
+
+- The screenshot with ERROR VERSION is in the release Pull Request.
+
+ 
+### 4. Hotfix 1.1.1 (`hotfix/1.1.1`)
+
+- The image in 1.1.0 was old. This was a bug in production, so I used a hotfix branch from `master` to fix it fast.
+
+- I changed the image to `citycase/assessment2:2.0`, the newest version on Docker Hub.
+
+- Version 1.1.1, because it is only a fix.
+
+- I merged it into `master`, added the tag `v1.1.1`, and merged it into `develop` so the fix is there too.
+
+ 
+
+### Conflicts
+
+I had no merge conflicts in Part 2, because I finished and merged each branch before starting the next one.
