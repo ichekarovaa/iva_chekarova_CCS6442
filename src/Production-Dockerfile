@@ -1,0 +1,26 @@
+
+FROM citycase/assessment2:1.0
+
+RUN apk add --no-cache postgresql16-client
+
+ENV PATH="/usr/libexec/postgresql16:${PATH}"
+
+ 
+
+WORKDIR /app
+
+COPY checkstatus.sh .
+
+RUN chmod +x checkstatus.sh
+
+ 
+
+
+RUN adduser -D checker
+
+USER checker
+
+ 
+
+CMD ["./checkstatus.sh"]
+
