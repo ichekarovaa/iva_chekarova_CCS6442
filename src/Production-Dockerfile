@@ -1,0 +1,26 @@
+
+FROM alpine:3.20
+
+RUN apk add --no-cache postgresql16-client
+
+ENV PATH="/usr/libexec/postgresql16:${PATH}"
+
+ 
+
+WORKDIR /app
+
+COPY checkstatus.sh .
+
+RUN chmod +x checkstatus.sh
+
+ 
+
+
+RUN adduser -D checker
+
+USER checker
+
+ 
+
+CMD ["./checkstatus.sh"]
+
